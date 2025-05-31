@@ -25,7 +25,7 @@ public:
 	void ReadUnlock();
 private:
 	std::atomic<uint32_t> m_lockFlag;
-	uint16_t m_writeCount = 0; // Write 에 대해 중첩 락을 허용하기 때문에 RAII Unlock시, 시도 횟수를 계산한다.
+	uint16_t m_writeCount = 0; // Write에 대해 중첩 락을 허용하기 때문에 RAII Unlock시, 시도 횟수를 계산한다.
 
 };
 

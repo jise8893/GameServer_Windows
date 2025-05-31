@@ -3,6 +3,7 @@
 
 IocpEvent::IocpEvent(EventType type) : m_type(type)
 {
+	Init();
 }
 
 
@@ -19,3 +20,4 @@ std::shared_ptr<IocpObject> IocpEvent::GetOwner()
 {
 	return m_pOwner;
 }
+

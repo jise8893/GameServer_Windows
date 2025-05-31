@@ -25,3 +25,12 @@ private:
 
 };
 
+class AcceptEvent : public IocpEvent
+{
+public:
+	AcceptEvent() : IocpEvent(EventType::ACCEPT)
+	{
+	}
+public:
+
+};
