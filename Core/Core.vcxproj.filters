@@ -8,6 +8,7 @@
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="ReaderWriterLock.h" />
     <ClInclude Include="Tls.h" />
+    <ClInclude Include="RecvBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -17,5 +18,6 @@
     <ClCompile Include="IocpEvent.cpp" />
     <ClCompile Include="ReaderWriterLock.cpp" />
     <ClCompile Include="Tls.cpp" />
+    <ClCompile Include="RecvBuffer.cpp" />
   </ItemGroup>
 </Project>

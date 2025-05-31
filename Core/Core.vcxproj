@@ -183,6 +183,7 @@
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReaderWriterLock.h" />
+    <ClInclude Include="RecvBuffer.h" />
     <ClInclude Include="SocketUtils.h" />
     <ClInclude Include="Tls.h" />
   </ItemGroup>
@@ -195,6 +196,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="ReaderWriterLock.cpp" />
+    <ClCompile Include="RecvBuffer.cpp" />
     <ClCompile Include="SocketUtils.cpp" />
     <ClCompile Include="Tls.cpp" />
   </ItemGroup>
