@@ -5,11 +5,17 @@
     <ClInclude Include="SocketUtils.h" />
     <ClInclude Include="AutoCloseSocket.h" />
     <ClInclude Include="IocpCore.h" />
+    <ClInclude Include="IocpEvent.h" />
+    <ClInclude Include="ReaderWriterLock.h" />
+    <ClInclude Include="Tls.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SocketUtils.cpp" />
     <ClCompile Include="AutoCloseSocket.cpp" />
     <ClCompile Include="IocpCore.cpp" />
+    <ClCompile Include="IocpEvent.cpp" />
+    <ClCompile Include="ReaderWriterLock.cpp" />
+    <ClCompile Include="Tls.cpp" />
   </ItemGroup>
 </Project>
