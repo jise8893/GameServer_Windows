@@ -12,6 +12,7 @@
     <ClInclude Include="SendBuffer.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="Listener.h" />
+    <ClInclude Include="Service.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -25,5 +26,6 @@
     <ClCompile Include="SendBuffer.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="Listener.cpp" />
+    <ClCompile Include="Service.cpp" />
   </ItemGroup>
 </Project>
