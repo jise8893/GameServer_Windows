@@ -19,3 +19,9 @@ AutoCloseSocket::~AutoCloseSocket()
         m_socket = INVALID_SOCKET;
     }
 }
+
+AutoCloseSocket& AutoCloseSocket::operator=(SOCKET socket)
+{
+    m_socket = socket;
+    return *this;
+}
