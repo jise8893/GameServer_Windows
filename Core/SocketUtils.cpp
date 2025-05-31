@@ -19,7 +19,7 @@ BOOL SocketUtils::Init()
 
 SOCKET SocketUtils::CreateSocket()
 {
-	SOCKET socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	SOCKET socket = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (socket == INVALID_SOCKET)
 	{
 		return -1; // Error creating socket
