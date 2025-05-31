@@ -9,6 +9,7 @@
     <ClInclude Include="ReaderWriterLock.h" />
     <ClInclude Include="Tls.h" />
     <ClInclude Include="RecvBuffer.h" />
+    <ClInclude Include="SendBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -19,5 +20,6 @@
     <ClCompile Include="ReaderWriterLock.cpp" />
     <ClCompile Include="Tls.cpp" />
     <ClCompile Include="RecvBuffer.cpp" />
+    <ClCompile Include="SendBuffer.cpp" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "RecvBuffer.h"
 
-RecvBuffer::RecvBuffer(uint32_t bufferSize)
+RecvBuffer::RecvBuffer(const uint32_t bufferSize)
 {
 	m_capacity = BUFFER_COUNT;
 	m_buffer.reserve(bufferSize);
@@ -12,7 +12,7 @@ RecvBuffer::~RecvBuffer()
 	m_buffer.clear();
 }
 
-bool RecvBuffer::OnRead(int32_t numOfBytes)
+bool RecvBuffer::OnRead(const int32_t numOfBytes)
 {
 	if (numOfBytes > GetDataSize())
 		return false;
@@ -20,7 +20,7 @@ bool RecvBuffer::OnRead(int32_t numOfBytes)
 }
 
 
-bool RecvBuffer::OnWrite(int32_t numOfBytes)
+bool RecvBuffer::OnWrite(const int32_t numOfBytes)
 {
 	if (numOfBytes > GetFreeSize())
 	{

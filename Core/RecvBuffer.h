@@ -8,11 +8,11 @@ class RecvBuffer
 	};
 
 public:
-	RecvBuffer(uint32_t bufferSize);
+	RecvBuffer(IN const uint32_t bufferSize);
 	~RecvBuffer();
 
-	bool OnRead(int32_t numOfBytes);
-	bool OnWrite(int32_t numOfBytes);
+	bool OnRead(IN const int32_t numOfBytes);
+	bool OnWrite(IN const int32_t numOfBytes);
 	void Clean();
 
 	BYTE* ReadPos() { return &m_buffer[m_readPos]; }
