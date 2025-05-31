@@ -1,10 +1,11 @@
 #pragma once
 
 #include "IocpEvent.h"
+#include "IocpCore.h"
 #include "AutoCloseSocket.h"
 #include "RecvBuffer.h"
 
-class Session : public std::enable_shared_from_this<Session>
+class Session : public IocpObject, public std::enable_shared_from_this<Session>
 {
 	enum
 	{
@@ -15,12 +16,13 @@ public:
 	virtual ~Session();
 
 
-	HANDLE	GetHandle();
+	virtual void	Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes) override;
+	virtual HANDLE	GetHandle() override;
 private:
 	RecvEvent			m_recvEvent;
 	SendEvent			m_sendEvent;
 
-	AutoCloseSocket		m_socket;
+	AutoCloseSocket		m_socket; // 소멸자에서 소켓 종료 처리하는 클래스
 	RecvBuffer			m_recvBuffer;
 };
 

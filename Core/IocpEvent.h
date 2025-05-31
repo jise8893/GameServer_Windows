@@ -21,6 +21,7 @@ public:
 
 	void Init();
 	std::shared_ptr<IocpObject> GetOwner();
+	EventType GetType() { return m_type; }
 private:
 	EventType	m_type;
 	std::shared_ptr<IocpObject> m_pOwner;
