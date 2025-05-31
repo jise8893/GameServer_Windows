@@ -16,7 +16,7 @@ public:
 	void Clean();
 
 	BYTE* ReadPos() { return &m_buffer[m_readPos]; }
-	BYTE* ReadPos() { return &m_buffer[m_writePos]; }
+	BYTE* WritePos() { return &m_buffer[m_writePos]; }
 	int32_t GetDataSize() { return m_writePos - m_readPos; }
 	int32_t GetFreeSize() { return m_bufferSize - m_writePos;}
 
