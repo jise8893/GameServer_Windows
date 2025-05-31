@@ -6,6 +6,12 @@ IocpEvent::IocpEvent(EventType type) : m_type(type)
 	Init();
 }
 
+IocpEvent::~IocpEvent()
+{
+	m_pOwner = nullptr;
+
+}
+
 
 void IocpEvent::Init()
 {

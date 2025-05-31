@@ -17,6 +17,8 @@ class IocpEvent : public OVERLAPPED
 {
 public:
 	IocpEvent(EventType type);
+	virtual ~IocpEvent();
+
 	void Init();
 	std::shared_ptr<IocpObject> GetOwner();
 private:
@@ -29,6 +31,16 @@ class AcceptEvent : public IocpEvent
 {
 public:
 	AcceptEvent() : IocpEvent(EventType::ACCEPT)
+	{
+	}
+public:
+
+};
+
+class SendEvent : public IocpEvent
+{
+public:
+	SendEvent() : IocpEvent(EventType::SEND)
 	{
 	}
 public:

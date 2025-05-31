@@ -8,6 +8,7 @@ SendBuffer::SendBuffer(const int32_t numOfBytes)
 
 SendBuffer::~SendBuffer()
 {
+	m_buffer.clear();
 }
 
 void SendBuffer::CopyData(IN const void* data, IN const int32_t size)
