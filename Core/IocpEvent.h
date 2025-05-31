@@ -33,7 +33,6 @@ public:
 	AcceptEvent() : IocpEvent(EventType::ACCEPT)
 	{
 	}
-public:
 
 };
 
@@ -43,6 +42,14 @@ public:
 	SendEvent() : IocpEvent(EventType::SEND)
 	{
 	}
-public:
 
 };
+
+class RecvEvent : public IocpEvent
+{
+public:
+	RecvEvent() :IocpEvent(EventType::RECV)
+	{
+	}
+};
+

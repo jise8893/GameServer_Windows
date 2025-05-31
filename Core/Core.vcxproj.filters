@@ -10,6 +10,7 @@
     <ClInclude Include="Tls.h" />
     <ClInclude Include="RecvBuffer.h" />
     <ClInclude Include="SendBuffer.h" />
+    <ClInclude Include="Session.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -21,5 +22,6 @@
     <ClCompile Include="Tls.cpp" />
     <ClCompile Include="RecvBuffer.cpp" />
     <ClCompile Include="SendBuffer.cpp" />
+    <ClCompile Include="Session.cpp" />
   </ItemGroup>
 </Project>
