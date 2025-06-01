@@ -1,4 +1,5 @@
 #pragma once
+#include <set>
 #include "Listener.h"
 #include "ReaderWriterLock.h"
 
@@ -19,6 +20,8 @@ public:
 	bool	Start(IN const WCHAR* address, IN const int port);
 	SessionSharedPtr CreateSession();
 	void			 CloseSession(SessionSharedPtr pSession);
+
+	IocpCoreSharedPtr GetIocpCore() { return m_pIocpCore; }
 private:
 	IocpCoreSharedPtr				m_pIocpCore;
 	ListenerSharedPtr				m_pListener;

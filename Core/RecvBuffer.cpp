@@ -4,7 +4,8 @@
 RecvBuffer::RecvBuffer(IN const uint32_t bufferSize)
 {
 	m_capacity = BUFFER_COUNT;
-	m_buffer.reserve(bufferSize * m_capacity);
+	m_bufferSize = bufferSize;
+	m_buffer.resize(bufferSize * m_capacity);
 }
 
 

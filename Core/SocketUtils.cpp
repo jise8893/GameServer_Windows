@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SocketUtils.h"
-
+#include "AutoCloseSocket.h"
 LPFN_CONNECTEX SocketUtils::ConnectEx = nullptr;
 LPFN_ACCEPTEX SocketUtils::AcceptEx = nullptr;
 LPFN_DISCONNECTEX SocketUtils::DisconnectEx = nullptr;
@@ -8,9 +8,17 @@ LPFN_DISCONNECTEX SocketUtils::DisconnectEx = nullptr;
 
 BOOL SocketUtils::Init()
 {
-	if(BindWindowsFunction(INVALID_SOCKET, WSAID_CONNECTEX, reinterpret_cast<LPVOID*>(&ConnectEx))&&
-		BindWindowsFunction(INVALID_SOCKET, WSAID_ACCEPTEX, reinterpret_cast<LPVOID*>(&AcceptEx))&&
-		BindWindowsFunction(INVALID_SOCKET, WSAID_DISCONNECTEX, reinterpret_cast<LPVOID*>(&DisconnectEx)))
+	WSADATA wsaData;
+	if(0 != WSAStartup(MAKEWORD(2, 2), &wsaData))
+	{
+		return false;
+	}
+
+	AutoCloseSocket dummy = CreateSocket();
+
+	if(BindWindowsFunction(dummy, WSAID_CONNECTEX, reinterpret_cast<LPVOID*>(&ConnectEx))&&
+		BindWindowsFunction(dummy, WSAID_ACCEPTEX, reinterpret_cast<LPVOID*>(&AcceptEx))&&
+		BindWindowsFunction(dummy, WSAID_DISCONNECTEX, reinterpret_cast<LPVOID*>(&DisconnectEx)))
 	{
 		return TRUE; 
 	}
@@ -22,6 +30,7 @@ SOCKET SocketUtils::CreateSocket()
 	SOCKET socket = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (socket == INVALID_SOCKET)
 	{
+		printf_s("WSASocket Failed : %d", WSAGetLastError());
 		return -1; // Error creating socket
 	}
 	return socket;

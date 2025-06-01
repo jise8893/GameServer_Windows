@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-class SendBuffer;
+#include "SendBuffer.h"
 enum class EventType : uint8_t
 {
 	CONNECT,

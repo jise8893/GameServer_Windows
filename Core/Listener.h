@@ -23,7 +23,7 @@ public:
 
 	bool			Start(ServiceSharedPtr pService, IN const WCHAR* address, IN const int port);
 private:
-	bool			RegisterAccept(IocpEvent* iocpEvent);
+	bool			RegisterAccept(AcceptEvent* acceptEvent);
 	void			ProcessAccept(AcceptEvent* acceptEvent);
 private:
 	AutoCloseSocket m_socket;

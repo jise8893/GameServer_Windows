@@ -1,10 +1,9 @@
 #include "pch.h"
 #include "Service.h"
 #include "Session.h"
-
+#include "SocketUtils.h"
 Service::Service(IocpCoreSharedPtr pIocpCore) : m_pIocpCore(pIocpCore)
 {
-
 }
 
 Service::~Service()
@@ -14,6 +13,12 @@ Service::~Service()
 
 bool Service::Start(IN const WCHAR* address, IN const int port)
 {
+
+	if (false == SocketUtils::Init())
+	{
+		return false;
+	}
+
 	try
 	{
 		m_pListener = std::make_shared<Listener>();
@@ -39,6 +44,8 @@ SessionSharedPtr Service::CreateSession()
 	{
 		return pSession;
 	}
+
+	m_pIocpCore->Register(pSession);
 
 	WriteLockGuard lockGuard(m_lock);
 	m_setSession.insert(pSession);

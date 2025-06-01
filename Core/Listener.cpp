@@ -21,11 +21,12 @@ void Listener::Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes)
 	}
 }
 
-bool Listener::RegisterAccept(IocpEvent* iocpEvent)
+bool Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
 	SessionSharedPtr pSession = m_pService->CreateSession();
-
 	DWORD numOfReadBytes = 0;
+	acceptEvent->Init();
+	acceptEvent->m_pSession = pSession;
 	if (false == SocketUtils::AcceptEx(m_socket,
 										reinterpret_cast<SOCKET>(pSession->GetHandle()),
 										pSession->m_recvBuffer.WritePos(),
@@ -33,12 +34,12 @@ bool Listener::RegisterAccept(IocpEvent* iocpEvent)
 										sizeof(SOCKADDR_IN) + 16,
 										sizeof(SOCKADDR_IN) + 16,
 										&numOfReadBytes,
-										reinterpret_cast<LPOVERLAPPED>(iocpEvent)))
+										reinterpret_cast<LPOVERLAPPED>(acceptEvent)))
 	{
 		const int32_t errCode = ::WSAGetLastError();
 		if (WSA_IO_PENDING != errCode)
 		{
-			return RegisterAccept(iocpEvent);
+			return RegisterAccept(acceptEvent);
 		}
 	}
 
@@ -74,6 +75,7 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 bool Listener::Start(ServiceSharedPtr pService, IN const WCHAR* address, IN const int port)
 {
 	m_socket = SocketUtils::CreateSocket();
+	
 	if (INVALID_SOCKET == m_socket)
 	{
 		return false; 
@@ -83,7 +85,9 @@ bool Listener::Start(ServiceSharedPtr pService, IN const WCHAR* address, IN cons
 	{
 		return false;
 	}
+
 	m_pService = pService;
+	m_pService->GetIocpCore()->Register(shared_from_this());
 
 	if (false == SocketUtils::SetLinger(m_socket, false))
 	{
@@ -95,7 +99,7 @@ bool Listener::Start(ServiceSharedPtr pService, IN const WCHAR* address, IN cons
 		return false;
 	}
 
-	if (SocketUtils::SetReuseAddress(m_socket, true))
+	if (false == SocketUtils::SetReuseAddress(m_socket, true))
 	{
 		return false;
 	}

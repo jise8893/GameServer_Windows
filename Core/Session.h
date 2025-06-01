@@ -25,36 +25,36 @@ public:
 	virtual ~Session();
 
 
-	virtual void	Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes) override;
-	virtual HANDLE	GetHandle() override;
-	void			ProcessConnect();
-	void			ProcessDisConnect();
-	void			ProcessSend(DWORD numOfBytes);
-	void			ProcessRecv(DWORD numOfBytes);
+	virtual void		Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes) override;
+	virtual HANDLE		GetHandle() override;
+	void				ProcessConnect();
+	void				ProcessDisConnect();
+	void				ProcessSend(DWORD numOfBytes);
+	void				ProcessRecv(DWORD numOfBytes);
 
-	void			RegisterRecv();
-	void			RegisterSend();
-	void			DisConnect();
+	void				RegisterRecv();
+	void				RegisterSend();
+	void				DisConnect();
 
 
 
-	void			Send(SendBufferSharedPtr pSendBuffer);
+	void				Send(SendBufferSharedPtr pSendBuffer);
 public:
 	// 클라/서버 컨텐츠 단 구현 코드
 	virtual void		OnConnected() {};
 	virtual int32_t		OnRecv(void* buffer, int32_t numOfBytes);
 	virtual void		OnSend(int32_t numOfBytes) {};
 private:
-	RecvEvent			m_recvEvent;
-	SendEvent			m_sendEvent;
-	DisConnectEvent		m_disConnectEvent;
-	AutoCloseSocket		m_socket; // 소멸자에서 소켓 종료 처리하는 클래스
-	ServiceSharedPtr	m_pService; 
+	RecvEvent				m_recvEvent;
+	SendEvent				m_sendEvent;
+	DisConnectEvent			m_disConnectEvent;
+	AutoCloseSocket			m_socket; // 소멸자에서 소켓 종료 처리하는 클래스
+	ServiceSharedPtr		m_pService; 
 private:
 	std::atomic_bool		m_bRegistedSend;// Send를 계속해서 호출하지 않고 SendQueue로 모아서 하나의 스레드만 전송하도록 풀링
 	std::queue<SendBufferSharedPtr>	m_sendQ;		// SendBuffer에서 전송할 데이터를 큐잉한다.
 	Lock					m_sendLock;		// sendQ 동기화 스핀락
 public:
-	RecvBuffer			m_recvBuffer;
+	RecvBuffer				m_recvBuffer;
 };
 
