@@ -25,7 +25,7 @@ void Session::Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes)
 		ProcessDisConnect();
 		break;
 	case EventType::RECV:
-		//ProcessRecv();
+		ProcessRecv(numOfBytes);
 		break;
 	case EventType::SEND:
 		ProcessSend(numOfBytes);
@@ -53,17 +53,23 @@ void Session::ProcessConnect()
 void Session::ProcessDisConnect()
 {
 	m_pService->CloseSession(std::static_pointer_cast<Session>(shared_from_this()));
+	m_disConnectEvent.Init();
 }
 
 void Session::ProcessSend(DWORD numOfBytes)
 {
+	// 하나의 스레드에 한해 SendEvent에 접근을 허용하기 때문에 동기화 불필요
 	m_sendEvent.SetOwner(nullptr);
 	m_sendEvent.m_vecSendBuffer.clear();
-	
+	m_sendEvent.Init();
+
 	if (0 == numOfBytes)
 	{
 		DisConnect();
 	}
+
+	// 컨텐츠 단에서 처리, 서버 동기화 보정 등등
+	OnSend(numOfBytes);
 
 	WriteLockGuard lockGuard(m_sendLock);
 	if(m_sendQ.empty())
@@ -78,10 +84,36 @@ void Session::ProcessSend(DWORD numOfBytes)
 
 }
 
-void Session::RegisterDisConnect()
+void Session::ProcessRecv(DWORD numOfBytes)
 {
+	
+	m_recvEvent.SetOwner(nullptr);
+	// RecvBuffer에 대해서 하나의 스레드만 Recv를 등록하고 처리하기에 동기화 불필요
+	
+	if (0 == numOfBytes)
+	{
+		DisConnect();
+		return;
+	}
+
+	if (false == m_recvBuffer.OnWrite(numOfBytes))
+	{
+		DisConnect();
+		return;
+	}
+
+	DWORD numOfRead = OnRecv(m_recvBuffer.ReadPos(), m_recvBuffer.GetDataSize());
+	if (m_recvBuffer.OnRead(numOfRead))
+	{
+		DisConnect();
+		return;
+	}
+
+	m_recvBuffer.Clean();
+	RegisterRecv();
 
 }
+
 
 void Session::RegisterRecv()
 {
@@ -159,4 +191,9 @@ void Session::Send(SendBufferSharedPtr pSendBuffer)
 	{
 		RegisterSend();
 	}
+}
+
+int32_t Session::OnRecv(void* buffer, int32_t numOfBytes)
+{
+	return numOfBytes;
 }

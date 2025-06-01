@@ -25,7 +25,7 @@ bool RecvBuffer::OnWrite(IN const int32_t numOfBytes)
 {
 	if (numOfBytes > GetFreeSize())
 	{
-		Clean();
+		return false;
 	}
 
 	m_writePos += numOfBytes;

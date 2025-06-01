@@ -30,8 +30,8 @@ public:
 	void			ProcessConnect();
 	void			ProcessDisConnect();
 	void			ProcessSend(DWORD numOfBytes);
+	void			ProcessRecv(DWORD numOfBytes);
 
-	void			RegisterDisConnect();
 	void			RegisterRecv();
 	void			RegisterSend();
 	void			DisConnect();
@@ -41,9 +41,9 @@ public:
 	void			Send(SendBufferSharedPtr pSendBuffer);
 public:
 	// 클라/서버 컨텐츠 단 구현 코드
-	virtual void OnConnected() {};
-	virtual void OnRecv() {};
-	virtual void OnSend() {};
+	virtual void		OnConnected() {};
+	virtual int32_t		OnRecv(void* buffer, int32_t numOfBytes);
+	virtual void		OnSend(int32_t numOfBytes) {};
 private:
 	RecvEvent			m_recvEvent;
 	SendEvent			m_sendEvent;
