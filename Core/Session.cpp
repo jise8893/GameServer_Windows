@@ -137,11 +137,12 @@ void Session::RegisterRecv()
 
 void Session::RegisterSend()
 {
-	WriteLockGuard lockGuard(m_sendLock);
 	m_sendEvent.SetOwner(shared_from_this());
 	m_sendEvent.m_vecSendBuffer.reserve(m_sendQ.size()); // √÷¿˚»≠
 
 	std::vector<WSABUF> wsaBufs;
+
+	WriteLockGuard lockGuard(m_sendLock);
 	wsaBufs.reserve(m_sendQ.size());
 
 	while (false == m_sendQ.empty())
