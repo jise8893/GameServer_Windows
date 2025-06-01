@@ -14,7 +14,8 @@ public:
     // 연산자 오버로딩을 통해 소켓을 직접 사용
     constexpr operator SOCKET() const noexcept { return m_socket; }
     operator HANDLE() { return reinterpret_cast<HANDLE>(m_socket); }
-
+    operator SOCKET* () { return &m_socket; }
+    SOCKET* operator&() { return &m_socket; }
 private:
     SOCKET m_socket; 
 };

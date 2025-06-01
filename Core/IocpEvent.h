@@ -20,6 +20,8 @@ public:
 	virtual ~IocpEvent();
 
 	void Init();
+
+	void SetOwner(std::shared_ptr<IocpObject> pIocpObject);
 	std::shared_ptr<IocpObject> GetOwner();
 	EventType GetType() { return m_type; }
 private:
@@ -34,7 +36,6 @@ public:
 	AcceptEvent() : IocpEvent(EventType::ACCEPT)
 	{
 	}
-
 };
 
 class SendEvent : public IocpEvent

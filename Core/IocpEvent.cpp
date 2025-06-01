@@ -22,6 +22,11 @@ void IocpEvent::Init()
 	OVERLAPPED::OffsetHigh = 0;
 }
 
+void IocpEvent::SetOwner(std::shared_ptr<IocpObject> pIocpObject)
+{
+	m_pOwner = pIocpObject;
+}
+
 std::shared_ptr<IocpObject> IocpEvent::GetOwner()
 {
 	return m_pOwner;

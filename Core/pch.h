@@ -5,4 +5,5 @@
 #include <memory>
 #include <thread>
 #include <vector>
+#include <set>
 #pragma comment(lib, "ws2_32.lib")

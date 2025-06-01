@@ -23,6 +23,8 @@ private:
 	SendEvent			m_sendEvent;
 
 	AutoCloseSocket		m_socket; // 소멸자에서 소켓 종료 처리하는 클래스
+public:
+
 	RecvBuffer			m_recvBuffer;
 };
 

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Service.h"
-
+#include "Session.h"
 Service::Service(IocpCoreSharedPtr pIocpCore) : m_pIocpCore(pIocpCore)
 {
 
@@ -11,7 +11,7 @@ Service::~Service()
 
 }
 
-bool Service::Start()
+bool Service::Start(IN const WCHAR* address, IN const int port)
 {
 	try
 	{
@@ -23,6 +23,23 @@ bool Service::Start()
 		return false;
 	}
 
+	m_pListener->Start(shared_from_this(), address, port);
 
+}
 
+SessionSharedPtr Service::CreateSession()
+{
+	SessionSharedPtr pSession = nullptr;
+	try
+	{
+		pSession = std::make_shared<Session>();
+	}
+	catch (...)
+	{
+		return pSession;
+	}
+
+	WriteLockGuard lockGuard(m_lock);
+	m_setSession.insert(pSession);
+	return pSession;
 }

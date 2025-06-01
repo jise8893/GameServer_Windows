@@ -1,7 +1,7 @@
 #pragma once
 class IocpEvent; // 전방 선언
 
-class IocpObject : std::enable_shared_from_this<IocpObject>
+class IocpObject : public std::enable_shared_from_this<IocpObject>
 {
 public:
 	IocpObject() = default;

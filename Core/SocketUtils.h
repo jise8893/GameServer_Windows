@@ -1,10 +1,10 @@
 #pragma once
 class SocketUtils
 {
-private:
-	static LPFN_ACCEPTEX		m_lpfnAcceptEx;
-	static LPFN_CONNECTEX		m_lpfnConnectEx;
-	static LPFN_DISCONNECTEX	m_lpfnDisconnectEx;
+public:
+	static LPFN_ACCEPTEX		AcceptEx;
+	static LPFN_CONNECTEX		ConnectEx;
+	static LPFN_DISCONNECTEX	DisconnectEx;
 public:
 	static BOOL		Init();
 	static SOCKET	CreateSocket();

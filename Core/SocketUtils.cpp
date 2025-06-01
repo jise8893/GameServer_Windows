@@ -1,16 +1,16 @@
 #include "pch.h"
 #include "SocketUtils.h"
 
-LPFN_CONNECTEX SocketUtils::m_lpfnConnectEx = nullptr;
-LPFN_ACCEPTEX SocketUtils::m_lpfnAcceptEx = nullptr;
-LPFN_DISCONNECTEX SocketUtils::m_lpfnDisconnectEx = nullptr;
+LPFN_CONNECTEX SocketUtils::ConnectEx = nullptr;
+LPFN_ACCEPTEX SocketUtils::AcceptEx = nullptr;
+LPFN_DISCONNECTEX SocketUtils::DisconnectEx = nullptr;
 
 
 BOOL SocketUtils::Init()
 {
-	if(BindWindowsFunction(INVALID_SOCKET, WSAID_CONNECTEX, reinterpret_cast<LPVOID*>(&m_lpfnConnectEx))&&
-		BindWindowsFunction(INVALID_SOCKET, WSAID_ACCEPTEX, reinterpret_cast<LPVOID*>(&m_lpfnAcceptEx))&&
-		BindWindowsFunction(INVALID_SOCKET, WSAID_DISCONNECTEX, reinterpret_cast<LPVOID*>(&m_lpfnDisconnectEx)))
+	if(BindWindowsFunction(INVALID_SOCKET, WSAID_CONNECTEX, reinterpret_cast<LPVOID*>(&ConnectEx))&&
+		BindWindowsFunction(INVALID_SOCKET, WSAID_ACCEPTEX, reinterpret_cast<LPVOID*>(&AcceptEx))&&
+		BindWindowsFunction(INVALID_SOCKET, WSAID_DISCONNECTEX, reinterpret_cast<LPVOID*>(&DisconnectEx)))
 	{
 		return TRUE; 
 	}
