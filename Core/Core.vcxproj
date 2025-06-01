@@ -179,6 +179,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AutoCloseSocket.h" />
+    <ClInclude Include="ClientService.h" />
     <ClInclude Include="IocpCore.h" />
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="Listener.h" />
@@ -196,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoCloseSocket.cpp" />
+    <ClCompile Include="ClientService.cpp" />
     <ClCompile Include="IocpCore.cpp" />
     <ClCompile Include="IocpEvent.cpp" />
     <ClCompile Include="Listener.cpp" />

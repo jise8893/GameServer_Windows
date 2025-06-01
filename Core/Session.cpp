@@ -183,6 +183,39 @@ void Session::DisConnect()
 	}
 }
 
+void Session::RegisterConnect(IN const WCHAR* address, IN const int port)
+{
+	if (false == SocketUtils::SetReuseAddress(m_socket, true))
+	{
+		return;
+	}
+
+	if (false == SocketUtils::BindAnyAddress(m_socket, 0))
+	{
+		return;
+	}
+
+	SOCKADDR_IN sockAddr = { 0 };
+	sockAddr.sin_family = AF_INET;
+	sockAddr.sin_port = htons(port);
+	InetPton(AF_INET, address, &sockAddr.sin_addr);
+
+	m_connectEvent.Init();
+	m_connectEvent.SetOwner(shared_from_this());
+
+    if (SocketUtils::ConnectEx(m_socket, reinterpret_cast<SOCKADDR*>(&sockAddr), sizeof(sockAddr), nullptr, 0, nullptr, nullptr))       
+	{  
+		int32_t errCode = ::WSAGetLastError();
+		if (ERROR_IO_PENDING != errCode)
+		{
+			m_connectEvent.SetOwner(nullptr);
+			return;
+		}
+    }
+
+}
+
+
 void Session::Send(SendBufferSharedPtr pSendBuffer)
 {
 	WriteLockGuard lockGuard(m_sendLock);

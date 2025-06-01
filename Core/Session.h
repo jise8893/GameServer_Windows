@@ -35,7 +35,7 @@ public:
 	void				RegisterRecv();
 	void				RegisterSend();
 	void				DisConnect();
-
+	void				RegisterConnect(IN const WCHAR* address, IN const int port);
 
 
 	void				Send(SendBufferSharedPtr pSendBuffer);
@@ -47,6 +47,7 @@ public:
 private:
 	RecvEvent				m_recvEvent;
 	SendEvent				m_sendEvent;
+	ConnectEvent			m_connectEvent;
 	DisConnectEvent			m_disConnectEvent;
 	AutoCloseSocket			m_socket; // 소멸자에서 소켓 종료 처리하는 클래스
 	ServiceSharedPtr		m_pService; 

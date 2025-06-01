@@ -64,3 +64,10 @@ public:
 	{
 	}
 };
+
+class ConnectEvent : public IocpEvent
+{
+public:
+	ConnectEvent(): IocpEvent(EventType::CONNECT)
+	{ }
+};
