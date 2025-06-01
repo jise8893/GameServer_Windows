@@ -17,12 +17,12 @@ public:
 	Service(IocpCoreSharedPtr pIocpCore);
 	virtual ~Service();
 
-	bool	Start(IN const WCHAR* address, IN const int port);
+	virtual bool	Start(IN const WCHAR* address, IN const int port) = 0;
 	SessionSharedPtr CreateSession();
 	void			 CloseSession(SessionSharedPtr pSession);
 
 	IocpCoreSharedPtr GetIocpCore() { return m_pIocpCore; }
-private:
+protected:
 	IocpCoreSharedPtr				m_pIocpCore;
 	ListenerSharedPtr				m_pListener;
 	

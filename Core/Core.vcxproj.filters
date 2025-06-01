@@ -15,6 +15,7 @@
     <ClInclude Include="Service.h" />
     <ClInclude Include="ThreadManager.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="ServerService.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -31,5 +32,6 @@
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="Singleton.cpp" />
+    <ClCompile Include="ServerService.cpp" />
   </ItemGroup>
 </Project>
