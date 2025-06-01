@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "IocpEvent.h"
-
+#include "SendBuffer.h"
 IocpEvent::IocpEvent(EventType type) : m_type(type)
 {
 	Init();

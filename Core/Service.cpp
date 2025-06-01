@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Service.h"
 #include "Session.h"
+
 Service::Service(IocpCoreSharedPtr pIocpCore) : m_pIocpCore(pIocpCore)
 {
 
@@ -32,7 +33,7 @@ SessionSharedPtr Service::CreateSession()
 	SessionSharedPtr pSession = nullptr;
 	try
 	{
-		pSession = std::make_shared<Session>();
+		pSession = std::make_shared<Session>(shared_from_this());
 	}
 	catch (...)
 	{
@@ -42,4 +43,10 @@ SessionSharedPtr Service::CreateSession()
 	WriteLockGuard lockGuard(m_lock);
 	m_setSession.insert(pSession);
 	return pSession;
+}
+
+void Service::CloseSession(SessionSharedPtr pSession)
+{
+	WriteLockGuard lockGuard(m_lock);
+	m_setSession.erase(pSession);
 }

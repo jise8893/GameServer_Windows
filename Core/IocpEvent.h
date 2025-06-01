@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-
+class SendBuffer;
 enum class EventType : uint8_t
 {
 	CONNECT,
@@ -34,8 +34,7 @@ class AcceptEvent : public IocpEvent
 {
 public:
 	AcceptEvent() : IocpEvent(EventType::ACCEPT)
-	{
-	}
+	{ }
 public:
 	std::shared_ptr<Session> m_pSession;
 };
@@ -46,14 +45,22 @@ public:
 	SendEvent() : IocpEvent(EventType::SEND)
 	{
 	}
-
+public:
+	std::vector<std::shared_ptr<SendBuffer>> m_vecSendBuffer;
 };
 
 class RecvEvent : public IocpEvent
 {
 public:
 	RecvEvent() :IocpEvent(EventType::RECV)
-	{
+	{ 
 	}
 };
 
+class DisConnectEvent : public IocpEvent
+{
+public:
+	DisConnectEvent() : IocpEvent(EventType::DISCONNECT)
+	{
+	}
+};

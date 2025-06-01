@@ -63,7 +63,7 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 	// 접속한 클라이언트의 IP 및 TCP 주소를 가져온 후 저장.
 	// 클라이언트 세션 연결 처리
 
-
+	pSession->ProcessConnect();
 
 
 	RegisterAccept(acceptEvent);

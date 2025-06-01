@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "Session.h"
 #include "SocketUtils.h"
-
-Session::Session() : m_recvBuffer(BUFFER_SIZE), m_socket(INVALID_SOCKET)
+#include "Service.h"
+Session::Session(ServiceSharedPtr pService) : m_recvBuffer(BUFFER_SIZE), m_socket(INVALID_SOCKET)
 {
 	m_socket = SocketUtils::CreateSocket();
+	m_pService = pService;
 }
+
 
 Session::~Session()
 {
@@ -17,12 +19,16 @@ void Session::Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes)
 	switch (iocpEvent->GetType())
 	{
 	case EventType::CONNECT:
+		ProcessConnect();
 		break;
 	case EventType::DISCONNECT:
+		ProcessDisConnect();
 		break;
 	case EventType::RECV:
+		//ProcessRecv();
 		break;
 	case EventType::SEND:
+		ProcessSend(numOfBytes);
 		break;
 	default:
 		break;
@@ -32,4 +38,125 @@ void Session::Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes)
 HANDLE Session::GetHandle()
 {
 	return m_socket;
+}
+
+void Session::ProcessConnect()
+{
+
+	// 컨텐츠 단에서 OnConnected 호출 처리 
+	OnConnected();
+
+	// RegisterRecv 등록  
+	RegisterRecv();
+}
+
+void Session::ProcessDisConnect()
+{
+	m_pService->CloseSession(std::static_pointer_cast<Session>(shared_from_this()));
+}
+
+void Session::ProcessSend(DWORD numOfBytes)
+{
+	m_sendEvent.SetOwner(nullptr);
+	m_sendEvent.m_vecSendBuffer.clear();
+	
+	if (0 == numOfBytes)
+	{
+		DisConnect();
+	}
+
+	WriteLockGuard lockGuard(m_sendLock);
+	if(m_sendQ.empty())
+	{
+		// Send 를 다시 다른 스레드가 등록할 수 있도록 변경
+		m_bRegistedSend.store(false);
+	}
+	else
+	{
+		RegisterSend();
+	}
+
+}
+
+void Session::RegisterDisConnect()
+{
+
+}
+
+void Session::RegisterRecv()
+{
+	WSABUF wsaBuf = { 0, };
+	wsaBuf.buf = reinterpret_cast<char*>(m_recvBuffer.WritePos());
+	wsaBuf.len = m_recvBuffer.GetFreeSize();
+	DWORD numOfBytes = 0;
+	DWORD flags = 0;
+	m_recvEvent.SetOwner(shared_from_this());
+
+	if (SOCKET_ERROR == ::WSARecv(m_socket, &wsaBuf, 1, &numOfBytes, &flags, &m_recvEvent, nullptr))
+	{
+		const int32_t errCode = ::WSAGetLastError();
+		if (ERROR_IO_PENDING != errCode)
+		{
+			DisConnect();
+			m_recvEvent.SetOwner(nullptr);
+		}
+	}
+}
+
+void Session::RegisterSend()
+{
+	WriteLockGuard lockGuard(m_sendLock);
+	m_sendEvent.SetOwner(shared_from_this());
+	m_sendEvent.m_vecSendBuffer.reserve(m_sendQ.size()); // 최적화
+
+	std::vector<WSABUF> wsaBufs;
+	wsaBufs.reserve(m_sendQ.size());
+
+	while (false == m_sendQ.empty())
+	{
+		WSABUF wsabuf;
+		SendBufferSharedPtr pSendBuffer = m_sendQ.front();
+		
+		wsabuf.buf = reinterpret_cast<char*>(pSendBuffer->GetBuffer());
+		wsabuf.len = pSendBuffer->GetWriteSize();
+		m_sendQ.pop();
+
+		// Queue에서 제거 한 후 SendBuffer가 Reference Count가 0이 되어 소멸되지 않도록 추가
+		m_sendEvent.m_vecSendBuffer.push_back(pSendBuffer);
+	}
+
+	DWORD numOfBytes = 0;
+	if (SOCKET_ERROR == ::WSASend(m_socket, wsaBufs.data(), wsaBufs.size(), &numOfBytes, 0, &m_sendEvent, nullptr))
+	{
+		int32_t errCode = ::WSAGetLastError();
+		if (ERROR_IO_PENDING != errCode)
+		{
+			DisConnect();
+		}
+	}
+
+}
+
+void Session::DisConnect()
+{
+	m_disConnectEvent.SetOwner(shared_from_this());
+	if (false == ::SocketUtils::DisconnectEx(m_socket, &m_disConnectEvent, TF_REUSE_SOCKET, 0))
+	{
+		int32_t errCode = ::WSAGetLastError();
+		if (ERROR_IO_PENDING != errCode)
+		{
+			m_disConnectEvent.SetOwner(nullptr);
+		}
+	}
+}
+
+void Session::Send(SendBufferSharedPtr pSendBuffer)
+{
+	WriteLockGuard lockGuard(m_sendLock);
+	m_sendQ.emplace(pSendBuffer);
+
+	if (m_bRegistedSend.exchange(true) == false)
+	{
+		RegisterSend();
+	}
 }
