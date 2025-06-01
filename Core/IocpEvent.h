@@ -12,7 +12,7 @@ enum class EventType : uint8_t
 };
 
 class IocpObject;
-
+class Session;
 class IocpEvent : public OVERLAPPED
 {
 public:
@@ -36,6 +36,8 @@ public:
 	AcceptEvent() : IocpEvent(EventType::ACCEPT)
 	{
 	}
+public:
+	std::shared_ptr<Session> m_pSession;
 };
 
 class SendEvent : public IocpEvent

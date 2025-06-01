@@ -17,21 +17,13 @@ void Listener::Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes)
 {
 	if (iocpEvent->GetType() == EventType::ACCEPT)
 	{
-
+		ProcessAccept(reinterpret_cast<AcceptEvent*>(iocpEvent));
 	}
 }
 
 bool Listener::RegisterAccept(IocpEvent* iocpEvent)
 {
 	SessionSharedPtr pSession = m_pService->CreateSession();
-	if (SOCKET_ERROR == ::setsockopt(reinterpret_cast<SOCKET>(pSession->GetHandle()),
-		SOL_SOCKET,
-		SO_UPDATE_ACCEPT_CONTEXT,
-		reinterpret_cast<char*>(&m_socket),
-		sizeof(SOCKET)))
-	{
-		return false;
-	}
 
 	DWORD numOfReadBytes = 0;
 	if (false == SocketUtils::AcceptEx(m_socket,
@@ -53,8 +45,29 @@ bool Listener::RegisterAccept(IocpEvent* iocpEvent)
 	return true;
 }
 
-void Listener::ProcessAccept()
-{
+void Listener::ProcessAccept(AcceptEvent* acceptEvent)
+{ 
+	SessionSharedPtr pSession = acceptEvent->m_pSession;
+	
+	// GetQueueCompletionStatus 로 AcceptEx를 호출 한 후 SO_UPDATE_ACCEPT_CONTEXT 옵션 설정 필요
+	if (SOCKET_ERROR == ::setsockopt(reinterpret_cast<SOCKET>(pSession->GetHandle()),
+		SOL_SOCKET,
+		SO_UPDATE_ACCEPT_CONTEXT,
+		reinterpret_cast<char*>(&m_socket),
+		sizeof(SOCKET)))
+	{
+		RegisterAccept(acceptEvent);
+		return;
+	}
+
+	// 접속한 클라이언트의 IP 및 TCP 주소를 가져온 후 저장.
+	// 클라이언트 세션 연결 처리
+
+
+
+
+	RegisterAccept(acceptEvent);
+
 
 }
 

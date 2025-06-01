@@ -24,7 +24,7 @@ public:
 	bool			Start(ServiceSharedPtr pService, IN const WCHAR* address, IN const int port);
 private:
 	bool			RegisterAccept(IocpEvent* iocpEvent);
-	void			ProcessAccept();
+	void			ProcessAccept(AcceptEvent* acceptEvent);
 private:
 	AutoCloseSocket m_socket;
 	std::vector<AcceptEvent*> m_vecAcceptEvent;
