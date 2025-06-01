@@ -22,6 +22,8 @@ public:
 	void			 CloseSession(SessionSharedPtr pSession);
 
 	IocpCoreSharedPtr GetIocpCore() { return m_pIocpCore; }
+
+	void		BroadCast(std::shared_ptr<SendBuffer> pSendBuffer);
 protected:
 	IocpCoreSharedPtr				m_pIocpCore;
 	ListenerSharedPtr				m_pListener;

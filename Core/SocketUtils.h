@@ -7,6 +7,7 @@ public:
 	static LPFN_DISCONNECTEX	DisconnectEx;
 public:
 	static BOOL		Init();
+	static BOOL		Clear();
 	static SOCKET	CreateSocket();
 	static BOOL		SetReuseAddress(SOCKET socket, bool reuse = true);
 	

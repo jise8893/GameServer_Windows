@@ -12,7 +12,13 @@ ClientService::~ClientService()
 
 bool ClientService::Start(IN const WCHAR* address, IN const int port)
 {
+	if (false == SocketUtils::Init())
+	{
+		return false;
+	}
+
 	std::shared_ptr<Session> pSession = CreateSession();
-	pSession->RegisterConnect(address, port);
+	if (false == pSession->RegisterConnect(address, port))
+		return false;
 	return true;
 }

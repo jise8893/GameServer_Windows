@@ -87,8 +87,7 @@ bool Listener::Start(ServiceSharedPtr pService, IN const WCHAR* address, IN cons
 	}
 
 	m_pService = pService;
-	m_pService->GetIocpCore()->Register(shared_from_this());
-
+	
 	if (false == SocketUtils::SetLinger(m_socket, false))
 	{
 		return false;
@@ -114,14 +113,17 @@ bool Listener::Start(ServiceSharedPtr pService, IN const WCHAR* address, IN cons
 		return false;
 	}
 	
-	for (int i = 0; i < ACCEPT_EVENT_COUNT; i++)
+	m_pService->GetIocpCore()->Register(shared_from_this());
+
+
+	for (int i = 0; i < 1; i++)
 	{
 		AcceptEvent* acceptEvent = new(std::nothrow) AcceptEvent;
 		if (nullptr == acceptEvent)
 		{
 			return false;
 		}
-		acceptEvent->SetOwner(shared_from_this());
+		acceptEvent->m_pOwner = shared_from_this();
 		m_vecAcceptEvent.emplace_back(acceptEvent);
 		RegisterAccept(acceptEvent);
 	}

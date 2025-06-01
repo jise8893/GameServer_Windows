@@ -19,9 +19,8 @@ class Session : public IocpObject
 		BUFFER_SIZE = 0x1000,
 	};
 public:
-	Session() = delete;
 
-	Session(ServiceSharedPtr pService); 
+	Session(); 
 	virtual ~Session();
 
 
@@ -35,14 +34,14 @@ public:
 	void				RegisterRecv();
 	void				RegisterSend();
 	void				DisConnect();
-	void				RegisterConnect(IN const WCHAR* address, IN const int port);
+	bool				RegisterConnect(IN const WCHAR* address, IN const int port);
 
-
+	void				SetService(ServiceSharedPtr pService);
 	void				Send(SendBufferSharedPtr pSendBuffer);
 public:
 	// 클라/서버 컨텐츠 단 구현 코드
 	virtual void		OnConnected() {};
-	virtual int32_t		OnRecv(void* buffer, int32_t numOfBytes);
+	virtual int32_t		OnRecv(void* buffer, int32_t numOfBytes) { return numOfBytes; }
 	virtual void		OnSend(int32_t numOfBytes) {};
 private:
 	RecvEvent				m_recvEvent;
@@ -56,6 +55,7 @@ private:
 	std::queue<SendBufferSharedPtr>	m_sendQ;		// SendBuffer에서 전송할 데이터를 큐잉한다.
 	Lock					m_sendLock;		// sendQ 동기화 스핀락
 public:
+	std::atomic_bool		m_bIsConnected;
 	RecvBuffer				m_recvBuffer;
 };
 

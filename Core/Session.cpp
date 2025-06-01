@@ -2,17 +2,18 @@
 #include "Session.h"
 #include "SocketUtils.h"
 #include "Service.h"
-Session::Session(ServiceSharedPtr pService) : m_recvBuffer(BUFFER_SIZE), m_socket(INVALID_SOCKET)
+#include "Protocol.h"
+Session::Session() : m_recvBuffer(BUFFER_SIZE), m_socket(INVALID_SOCKET)
 {
 	m_socket = SocketUtils::CreateSocket();
-	m_pService = pService;
 }
 
 
 Session::~Session()
 {
-
+	printf("hello session");
 }
+
 
 void Session::Dispatch(IocpEvent* iocpEvent, DWORD numOfBytes)
 {
@@ -59,7 +60,7 @@ void Session::ProcessDisConnect()
 void Session::ProcessSend(DWORD numOfBytes)
 {
 	// 하나의 스레드에 한해 SendEvent에 접근을 허용하기 때문에 동기화 불필요
-	m_sendEvent.SetOwner(nullptr);
+	m_sendEvent.m_pOwner = nullptr;
 	m_sendEvent.m_vecSendBuffer.clear();
 	m_sendEvent.Init();
 
@@ -87,7 +88,7 @@ void Session::ProcessSend(DWORD numOfBytes)
 void Session::ProcessRecv(DWORD numOfBytes)
 {
 	
-	m_recvEvent.SetOwner(nullptr);
+	m_recvEvent.m_pOwner = nullptr;
 	// RecvBuffer에 대해서 하나의 스레드만 Recv를 등록하고 처리하기에 동기화 불필요
 	
 	if (0 == numOfBytes)
@@ -117,27 +118,30 @@ void Session::ProcessRecv(DWORD numOfBytes)
 
 void Session::RegisterRecv()
 {
+	if (m_bIsConnected.load() == false)
+		return;
+
 	WSABUF wsaBuf = { 0, };
 	wsaBuf.buf = reinterpret_cast<char*>(m_recvBuffer.WritePos());
 	wsaBuf.len = m_recvBuffer.GetFreeSize();
 	DWORD numOfBytes = 0;
 	DWORD flags = 0;
-	m_recvEvent.SetOwner(shared_from_this());
+	m_recvEvent.m_pOwner = shared_from_this();
 
 	if (SOCKET_ERROR == ::WSARecv(m_socket, &wsaBuf, 1, &numOfBytes, &flags, &m_recvEvent, nullptr))
 	{
 		const int32_t errCode = ::WSAGetLastError();
-		if (ERROR_IO_PENDING != errCode)
+		if (WSA_IO_PENDING != errCode)
 		{
 			DisConnect();
-			m_recvEvent.SetOwner(nullptr);
+			m_recvEvent.m_pOwner = nullptr;
 		}
 	}
 }
 
 void Session::RegisterSend()
 {
-	m_sendEvent.SetOwner(shared_from_this());
+	m_sendEvent.m_pOwner = shared_from_this();
 	m_sendEvent.m_vecSendBuffer.reserve(m_sendQ.size()); // 최적화
 
 	std::vector<WSABUF> wsaBufs;
@@ -162,7 +166,7 @@ void Session::RegisterSend()
 	if (SOCKET_ERROR == ::WSASend(m_socket, wsaBufs.data(), wsaBufs.size(), &numOfBytes, 0, &m_sendEvent, nullptr))
 	{
 		int32_t errCode = ::WSAGetLastError();
-		if (ERROR_IO_PENDING != errCode)
+		if (WSA_IO_PENDING != errCode)
 		{
 			DisConnect();
 		}
@@ -172,49 +176,70 @@ void Session::RegisterSend()
 
 void Session::DisConnect()
 {
-	m_disConnectEvent.SetOwner(shared_from_this());
+	if (m_bIsConnected.exchange(false) == false)
+		return;
+
+
+	m_disConnectEvent.m_pOwner = shared_from_this();
 	if (false == ::SocketUtils::DisconnectEx(m_socket, &m_disConnectEvent, TF_REUSE_SOCKET, 0))
 	{
 		int32_t errCode = ::WSAGetLastError();
-		if (ERROR_IO_PENDING != errCode)
+		if (WSA_IO_PENDING != errCode)
 		{
-			m_disConnectEvent.SetOwner(nullptr);
+			m_disConnectEvent.m_pOwner = nullptr;
 		}
 	}
 }
 
-void Session::RegisterConnect(IN const WCHAR* address, IN const int port)
+bool Session::RegisterConnect(IN const WCHAR* address, IN const int port)  
+{  
+	
+	if (m_bIsConnected.load() == true)
+		return true;
+
+
+    if (false == SocketUtils::SetReuseAddress(m_socket, true))  
+    {  
+        return false;  
+    }  
+
+    if (false == SocketUtils::BindAnyAddress(m_socket, 0))  
+    {  
+		return false;
+    }  
+
+
+	SOCKADDR_IN sockAddr;
+    sockAddr.sin_family = AF_INET;  
+    sockAddr.sin_port = htons(port);
+	::InetPtonW(AF_INET, address, &sockAddr.sin_addr);
+ 
+    m_connectEvent.m_pOwner = shared_from_this();  
+
+    DWORD numOfBytes = 0; 
+	
+	
+    if (false == SocketUtils::ConnectEx(m_socket, reinterpret_cast<SOCKADDR*>(&sockAddr), sizeof(sockAddr), nullptr, 0, &numOfBytes, &m_connectEvent))  
+    {  
+        int32_t errCode = ::WSAGetLastError();  
+        if (WSA_IO_PENDING != errCode)  
+        {  
+			m_connectEvent.m_pOwner = nullptr;
+			return false;
+        }
+    }  
+	else
+	{
+		return false;
+	}
+  
+}
+
+
+void Session::SetService(ServiceSharedPtr pService)
 {
-	if (false == SocketUtils::SetReuseAddress(m_socket, true))
-	{
-		return;
-	}
-
-	if (false == SocketUtils::BindAnyAddress(m_socket, 0))
-	{
-		return;
-	}
-
-	SOCKADDR_IN sockAddr = { 0 };
-	sockAddr.sin_family = AF_INET;
-	sockAddr.sin_port = htons(port);
-	InetPton(AF_INET, address, &sockAddr.sin_addr);
-
-	m_connectEvent.Init();
-	m_connectEvent.SetOwner(shared_from_this());
-
-    if (SocketUtils::ConnectEx(m_socket, reinterpret_cast<SOCKADDR*>(&sockAddr), sizeof(sockAddr), nullptr, 0, nullptr, nullptr))       
-	{  
-		int32_t errCode = ::WSAGetLastError();
-		if (ERROR_IO_PENDING != errCode)
-		{
-			m_connectEvent.SetOwner(nullptr);
-			return;
-		}
-    }
-
+	m_pService = pService;
 }
-
 
 void Session::Send(SendBufferSharedPtr pSendBuffer)
 {
@@ -225,9 +250,4 @@ void Session::Send(SendBufferSharedPtr pSendBuffer)
 	{
 		RegisterSend();
 	}
-}
-
-int32_t Session::OnRecv(void* buffer, int32_t numOfBytes)
-{
-	return numOfBytes;
 }

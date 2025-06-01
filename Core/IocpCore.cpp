@@ -4,7 +4,7 @@
 
 IocpCore::IocpCore()
 {
-	m_hIocp = ::CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
+	m_hIocp = ::CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
 }
 
 IocpCore::~IocpCore()
@@ -19,14 +19,13 @@ bool IocpCore::Dispatch()
 
 	if(::GetQueuedCompletionStatus(m_hIocp, &numOfBytes, &key, reinterpret_cast<LPOVERLAPPED*>(&iocpEvent), INFINITE))
 	{
-		std::shared_ptr<IocpObject> pIocpObject = iocpEvent->GetOwner();
+		std::shared_ptr<IocpObject> pIocpObject = iocpEvent->m_pOwner;
 		pIocpObject->Dispatch(iocpEvent, numOfBytes);
 		
 	}
-	else
+	else 
 	{
-		int32_t errCode = ::WSAGetLastError();
-		printf_s("WSAGetLastError = %d, Line = %s", errCode, __LINE__);
+		return false;
 	}
 
 	return true;
@@ -34,6 +33,7 @@ bool IocpCore::Dispatch()
 
 bool IocpCore::Register(std::shared_ptr<IocpObject> pIocpObject)
 {
+	HANDLE socket = pIocpObject->GetHandle();
 	return ::CreateIoCompletionPort(pIocpObject->GetHandle(), m_hIocp, 0, 0);
 }
 

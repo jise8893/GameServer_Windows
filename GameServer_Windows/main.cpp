@@ -21,14 +21,15 @@ int main()
 	}
 
 	pService->Start(L"127,0,0,1", 8888);
-	
-	THREAD_MGR().CreateThread([=]{
-		while (true)
-		{
-			pIocpCore->Dispatch();
-		}
-	});
-
+	for (int i = 0; i < 3; i++)
+	{
+		THREAD_MGR().CreateThread([=] {
+			while (true)
+			{
+				pIocpCore->Dispatch();
+			}
+			});
+	}
 	THREAD_MGR().Join();
 	return 0;
 }

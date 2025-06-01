@@ -25,6 +25,11 @@ BOOL SocketUtils::Init()
 	return FALSE;
 }
 
+BOOL SocketUtils::Clear()
+{
+	return ::WSACleanup();
+}
+
 SOCKET SocketUtils::CreateSocket()
 {
 	SOCKET socket = ::WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);

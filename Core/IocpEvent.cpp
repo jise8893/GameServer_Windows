@@ -6,11 +6,6 @@ IocpEvent::IocpEvent(EventType type) : m_type(type)
 	Init();
 }
 
-IocpEvent::~IocpEvent()
-{
-	m_pOwner = nullptr;
-
-}
 
 
 void IocpEvent::Init()
@@ -22,13 +17,5 @@ void IocpEvent::Init()
 	OVERLAPPED::OffsetHigh = 0;
 }
 
-void IocpEvent::SetOwner(std::shared_ptr<IocpObject> pIocpObject)
-{
-	m_pOwner = pIocpObject;
-}
 
-std::shared_ptr<IocpObject> IocpEvent::GetOwner()
-{
-	return m_pOwner;
-}
 
