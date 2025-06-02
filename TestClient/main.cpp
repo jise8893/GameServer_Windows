@@ -7,6 +7,9 @@
 #include "../Core/ThreadManager.h"
 #include "../Core/SendBuffer.h"
 #include "../Core/Protocol.h"
+#include "GameSession.h"
+
+auto gameSession = []() {return std::make_shared<GameSession>(); };
 int main()
 {
 
@@ -17,7 +20,7 @@ int main()
 	try
 	{
 		pIocpCore = std::make_shared<IocpCore>();
-		pService = std::make_shared<ClientService>(pIocpCore);
+		pService = std::make_shared<ClientService>(pIocpCore, gameSession);
 	}
 	catch (std::bad_alloc& e)
 	{

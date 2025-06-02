@@ -69,7 +69,6 @@ void Session::ProcessSend(DWORD numOfBytes)
 		DisConnect();
 	}
 
-	// 컨텐츠 단에서 처리, 서버 동기화 보정 등등
 	OnSend(numOfBytes);
 
 	WriteLockGuard lockGuard(m_sendLock);

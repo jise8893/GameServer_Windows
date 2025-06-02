@@ -7,7 +7,7 @@
 #include "RecvBuffer.h"
 #include "SendBuffer.h"
 #include "ReaderWriterLock.h"
-
+#include <queue>
 class Service;
 using ServiceSharedPtr = std::shared_ptr<Service>;
 using SendBufferSharedPtr = std::shared_ptr<SendBuffer>;

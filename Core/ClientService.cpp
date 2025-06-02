@@ -2,7 +2,7 @@
 #include "ClientService.h"
 #include "SocketUtils.h"
 #include "Session.h"
-ClientService::ClientService(std::shared_ptr<IocpCore> pIocpCore) : Service(pIocpCore)
+ClientService::ClientService(std::shared_ptr<IocpCore> pIocpCore, std::function<SessionSharedPtr()> function) : Service(pIocpCore, function)
 {
 }
 

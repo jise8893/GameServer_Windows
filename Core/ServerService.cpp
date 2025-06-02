@@ -2,8 +2,9 @@
 #include "ServerService.h"
 #include "SocketUtils.h"
 
-ServerService::ServerService(std::shared_ptr<IocpCore> pIocpCore) : Service(pIocpCore)
+ServerService::ServerService(std::shared_ptr<IocpCore> pIocpCore, std::function<SessionSharedPtr()> function) : Service(pIocpCore, function)
 {
+	m_function = function;
 
 }
 

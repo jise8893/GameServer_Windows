@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "../Core/ServerService.h"
 #include "../Core/ThreadManager.h"
+#include "GameSession.h"
+
+auto gameSession = []() {return std::make_shared<GameSession>(); };
 // @func main
 // @brief main function for the game server
 int main()
@@ -12,7 +15,7 @@ int main()
 	try
 	{
 		pIocpCore = std::make_shared<IocpCore>();
-		pService = std::make_shared<ServerService>(pIocpCore);
+		pService = std::make_shared<ServerService>(pIocpCore, gameSession);
 	}
 	catch (std::bad_alloc& e)
 	{
