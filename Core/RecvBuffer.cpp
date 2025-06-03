@@ -16,9 +16,11 @@ RecvBuffer::~RecvBuffer()
 
 bool RecvBuffer::OnRead(IN const int32_t numOfBytes)
 {
+	int dataSize = GetDataSize();
 	if (numOfBytes > GetDataSize())
 		return false;
 	m_readPos += numOfBytes;
+	return true;
 }
 
 

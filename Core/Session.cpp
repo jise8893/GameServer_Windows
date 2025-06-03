@@ -3,7 +3,7 @@
 #include "SocketUtils.h"
 #include "Service.h"
 #include "Protocol.h"
-Session::Session() : m_recvBuffer(BUFFER_SIZE), m_socket(INVALID_SOCKET)
+Session::Session() : m_recvBuffer(BUFFER_SIZE), m_bIsConnected(false), m_socket(INVALID_SOCKET)
 {
 	m_socket = SocketUtils::CreateSocket();
 }
@@ -43,7 +43,7 @@ HANDLE Session::GetHandle()
 
 void Session::ProcessConnect()
 {
-
+	m_bIsConnected.store(true);
 	// 컨텐츠 단에서 OnConnected 호출 처리 
 	OnConnected();
 
@@ -103,7 +103,7 @@ void Session::ProcessRecv(DWORD numOfBytes)
 	}
 
 	DWORD numOfRead = OnRecv(m_recvBuffer.ReadPos(), m_recvBuffer.GetDataSize());
-	if (m_recvBuffer.OnRead(numOfRead))
+	if (false == m_recvBuffer.OnRead(numOfRead))
 	{
 		DisConnect();
 		return;
@@ -140,6 +140,12 @@ void Session::RegisterRecv()
 
 void Session::RegisterSend()
 {
+	if (m_bIsConnected.load() == false)
+	{
+		m_bRegistedSend.store(false);
+		return;
+	}
+		
 	m_sendEvent.m_pOwner = shared_from_this();
 	m_sendEvent.m_vecSendBuffer.reserve(m_sendQ.size()); // 최적화
 
@@ -159,6 +165,7 @@ void Session::RegisterSend()
 
 		// Queue에서 제거 한 후 SendBuffer가 Reference Count가 0이 되어 소멸되지 않도록 추가
 		m_sendEvent.m_vecSendBuffer.push_back(pSendBuffer);
+		wsaBufs.push_back(wsabuf);
 	}
 
 	DWORD numOfBytes = 0;
@@ -193,9 +200,9 @@ void Session::DisConnect()
 bool Session::RegisterConnect(IN const WCHAR* address, IN const int port)  
 {  
 	
-	if (m_bIsConnected.load() == true)
+	if (m_bIsConnected == true)
 		return true;
-
+	
 
     if (false == SocketUtils::SetReuseAddress(m_socket, true))  
     {  
@@ -242,11 +249,18 @@ void Session::SetService(ServiceSharedPtr pService)
 
 void Session::Send(SendBufferSharedPtr pSendBuffer)
 {
-	WriteLockGuard lockGuard(m_sendLock);
-	m_sendQ.emplace(pSendBuffer);
-
-	if (m_bRegistedSend.exchange(true) == false)
+	bool registerSend = false;
 	{
-		RegisterSend();
+		WriteLockGuard lockGuard(m_sendLock);
+		m_sendQ.emplace(pSendBuffer);
+		if (m_bRegistedSend.exchange(true) == false)
+		{
+			registerSend = true;
+		}
+
 	}
+	
+	if (registerSend)
+		RegisterSend();
+	
 }

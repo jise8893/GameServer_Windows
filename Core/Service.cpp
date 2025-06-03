@@ -3,7 +3,7 @@
 #include "Session.h"
 #include "SocketUtils.h"
 
-Service::Service(IocpCoreSharedPtr pIocpCore, ContentSession function) : m_pIocpCore(pIocpCore)
+Service::Service(IocpCoreSharedPtr pIocpCore, ContentSession function) : m_pIocpCore(pIocpCore), m_function(function)
 {
 }
 Service::~Service()
@@ -37,6 +37,7 @@ void Service::CloseSession(SessionSharedPtr pSession)
 }
 void Service::BroadCast(std::shared_ptr<SendBuffer> pSendBuffer)
 {
+	WriteLockGuard lockGuard(m_lock);
 	for (const auto session : m_setSession)
 	{
 		session->Send(pSendBuffer);

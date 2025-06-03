@@ -1,11 +1,7 @@
-#include <winsock2.h>
-#include <mswsock.h>
-#include <WS2tcpip.h>
-#include <memory>
+#include "pch.h"
 #include <thread>
 #include "../Core/ClientService.h"
 #include "../Core/ThreadManager.h"
-#include "../Core/SendBuffer.h"
 #include "../Core/Protocol.h"
 #include "GameSession.h"
 
@@ -39,6 +35,13 @@ int main()
 		});
 
 
+	while (true)
+	{
+		std::shared_ptr<SendBuffer> pSendBuffer = std::make_shared<SendBuffer>(100);
+		pSendBuffer->CopyData("hello",5);
+		pService->BroadCast(pSendBuffer);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
 	THREAD_MGR().Join();
 	
 

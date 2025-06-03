@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-class SendBuffer
+class SendBuffer 
 {
 public:
 	SendBuffer(const int32_t numOfBytes);

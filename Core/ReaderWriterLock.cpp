@@ -5,7 +5,7 @@
 void Lock::WriteLock()
 {
 	// 동일한 스레드에서 락을 잡은 경우 즉시 반환
-	const uint32_t lockThreadId = m_lockFlag.load() & WRITE_THREAD_MASK;
+	const uint32_t lockThreadId = (m_lockFlag.load() & WRITE_THREAD_MASK) >> 16;
 	if (tlsThreadId == lockThreadId)
 	{
 		m_writeCount++;
