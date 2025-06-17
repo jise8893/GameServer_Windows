@@ -14,8 +14,13 @@ AutoCloseSocket::~AutoCloseSocket()
 {
     if (m_socket != INVALID_SOCKET)
     {
-		::shutdown(m_socket, SD_BOTH);
         ::closesocket(m_socket);
         m_socket = INVALID_SOCKET;
     }
+}
+
+AutoCloseSocket& AutoCloseSocket::operator=(SOCKET socket)
+{
+    m_socket = socket;
+    return *this;
 }

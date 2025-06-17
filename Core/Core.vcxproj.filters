@@ -5,11 +5,43 @@
     <ClInclude Include="SocketUtils.h" />
     <ClInclude Include="AutoCloseSocket.h" />
     <ClInclude Include="IocpCore.h" />
+    <ClInclude Include="IocpEvent.h" />
+    <ClInclude Include="ReaderWriterLock.h" />
+    <ClInclude Include="Tls.h" />
+    <ClInclude Include="RecvBuffer.h" />
+    <ClInclude Include="SendBuffer.h" />
+    <ClInclude Include="Session.h" />
+    <ClInclude Include="Listener.h" />
+    <ClInclude Include="Service.h" />
+    <ClInclude Include="ThreadManager.h" />
+    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="ServerService.h" />
+    <ClInclude Include="ClientService.h" />
+    <ClInclude Include="Protocol.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="SocketUtils.cpp" />
     <ClCompile Include="AutoCloseSocket.cpp" />
     <ClCompile Include="IocpCore.cpp" />
+    <ClCompile Include="IocpEvent.cpp" />
+    <ClCompile Include="ReaderWriterLock.cpp" />
+    <ClCompile Include="Tls.cpp" />
+    <ClCompile Include="RecvBuffer.cpp" />
+    <ClCompile Include="SendBuffer.cpp" />
+    <ClCompile Include="Session.cpp" />
+    <ClCompile Include="Listener.cpp" />
+    <ClCompile Include="Service.cpp" />
+    <ClCompile Include="ThreadManager.cpp" />
+    <ClCompile Include="Singleton.cpp" />
+    <ClCompile Include="ServerService.cpp" />
+    <ClCompile Include="ClientService.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{2aaf16e6-2df9-4a00-97de-554431ece6ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
