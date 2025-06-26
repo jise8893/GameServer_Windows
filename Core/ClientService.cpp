@@ -18,7 +18,7 @@ bool ClientService::Start(IN const WCHAR* address, IN const int port)
 	}
 
 	std::shared_ptr<Session> pSession = CreateSession();
-if (false == pSession->RegisterConnect(address, port))
+	if (false == pSession->RegisterConnect(address, port))
 		return false;
 	return true;
 }

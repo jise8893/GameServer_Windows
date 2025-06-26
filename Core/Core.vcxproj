@@ -184,7 +184,6 @@
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Protocol.h" />
     <ClInclude Include="ReaderWriterLock.h" />
     <ClInclude Include="RecvBuffer.h" />
     <ClInclude Include="SendBuffer.h" />

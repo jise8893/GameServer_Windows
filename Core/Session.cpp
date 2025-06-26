@@ -2,7 +2,6 @@
 #include "Session.h"
 #include "SocketUtils.h"
 #include "Service.h"
-#include "Protocol.h"
 Session::Session() : m_recvBuffer(BUFFER_SIZE), m_bIsConnected(false), m_socket(INVALID_SOCKET)
 {
 	m_socket = SocketUtils::CreateSocket();
