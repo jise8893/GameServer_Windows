@@ -24,6 +24,7 @@ int main()
 	}
 
 	pService->Start(L"127,0,0,1", 8888);
+
 	for (int i = 0; i < 3; i++)
 	{
 		THREAD_MGR().CreateThread([=] {
@@ -31,8 +32,9 @@ int main()
 			{
 				pIocpCore->Dispatch();
 			}
-			});
+		});
 	}
+
 	THREAD_MGR().Join();
 	return 0;
 }
