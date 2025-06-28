@@ -2,7 +2,6 @@
 // NO CHECKED-IN PROTOBUF GENCODE
 // source: Protocol.proto
 // Protobuf C++ Version: 5.29.3
-#include "pch.h"
 #include "Protocol.pb.h"
 
 #include <algorithm>
@@ -797,3 +796,4 @@ PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::std::false_type
         (::_pbi::AddDescriptors(&descriptor_table_Protocol_2eproto),
          ::std::false_type{});
 #include "google/protobuf/port_undef.inc"
+#include "pch.h"

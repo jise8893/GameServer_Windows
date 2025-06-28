@@ -2,7 +2,6 @@
 #include <thread>
 #include "../Core/ClientService.h"
 #include "../Core/ThreadManager.h"
-#include "../Core/Protocol.h"
 #include "GameSession.h"
 
 auto gameSession = []() {return std::make_shared<GameSession>(); };

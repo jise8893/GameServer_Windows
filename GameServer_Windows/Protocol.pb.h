@@ -5,7 +5,6 @@
 
 #ifndef Protocol_2eproto_2epb_2eh
 #define Protocol_2eproto_2epb_2eh
-
 #include <limits>
 #include <string>
 #include <type_traits>

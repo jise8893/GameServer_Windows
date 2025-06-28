@@ -5,10 +5,8 @@
 #include <memory>
 
 #define WIN32_LEAN_AND_MEAN
-
-#pragma comment(lib, "abseil_dll.lib")
 #ifdef _DEBUG
-#pragma comment(lib, "libprotobufd.lib")
+#pragma comment(lib, "Debug\\dll\\libprotobufd.dll")
 #else
-#pragma comment(lib, "libprotobuf.lib")
+#pragma comment(lib, "Release\\dll\\libprotobuf.dll")
 #endif
