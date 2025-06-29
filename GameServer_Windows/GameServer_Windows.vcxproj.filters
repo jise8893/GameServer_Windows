@@ -5,10 +5,29 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="Protocol.pb.cc" />
+    <ClCompile Include="Job.cpp" />
+    <ClCompile Include="Room.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameSession.h" />
     <ClInclude Include="Protocol.pb.h" />
+    <ClInclude Include="Job.h" />
+    <ClInclude Include="Room.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{5ed9c6cc-f62e-4b4f-ad28-1064d11f1970}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

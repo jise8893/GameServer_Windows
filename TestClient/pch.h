@@ -6,7 +6,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #ifdef _DEBUG
-#pragma comment(lib, "Debug\\dll\\libprotobufd.dll")
+#pragma comment(lib, "Debug\\libprotobufd.lib")
 #else
-#pragma comment(lib, "Release\\dll\\libprotobuf.dll")
+#pragma comment(lib, "Release\\libprotobuf.lib")
 #endif

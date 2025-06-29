@@ -100,8 +100,8 @@ void Session::ProcessRecv(DWORD numOfBytes)
 		DisConnect();
 		return;
 	}
-
-	DWORD numOfRead = OnRecv(m_recvBuffer.ReadPos(), m_recvBuffer.GetDataSize());
+	DWORD dataSize = m_recvBuffer.GetDataSize();
+	int32_t numOfRead = OnRecv(m_recvBuffer.ReadPos(), dataSize);
 	if (false == m_recvBuffer.OnRead(numOfRead))
 	{
 		DisConnect();

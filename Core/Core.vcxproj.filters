@@ -36,4 +36,20 @@
     <ClCompile Include="ServerService.cpp" />
     <ClCompile Include="ClientService.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Common\Protobuf\Struct.proto">
+      <Filter>Protocol</Filter>
+    </None>
+    <None Include="..\Common\Protobuf\Enum.proto">
+      <Filter>Protocol</Filter>
+    </None>
+    <None Include="..\Common\Protobuf\Protocol.proto">
+      <Filter>Protocol</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{3f1078e3-264f-4012-bec8-825e92076743}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>

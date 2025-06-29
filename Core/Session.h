@@ -43,7 +43,7 @@ public:
 public:
 	// 클라/서버 컨텐츠 단 구현 코드
 	virtual void		OnConnected() {};
-	virtual int32_t		OnRecv(void* buffer, int32_t numOfBytes) { return numOfBytes; }
+	virtual int32_t		OnRecv(void* buffer, int32_t numOfBytes) = 0;
 	virtual void		OnSend(int32_t numOfBytes) {};
 public:
 	RecvEvent				m_recvEvent;

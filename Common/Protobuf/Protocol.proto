@@ -1,17 +1,37 @@
 syntax = "proto3";
 package Protocol;
 
-message BuffData
+import "Enum.proto"
+import "Struct.proto"
+
+message C_LOGIN 
 {
-	int64 buffid = 1;
-	float remainTime = 2;
-	repeated int64 victims = 3;
+
 }
 
-message dummyMessage
+message S_LOGIN
 {
-	int64 id = 1;
-	int32 hp = 2;
-	int32 attack = 3;
-	repeated BuffData buffs = 4;
+	bool success = 1;
+	repated Player Players = 2;
+}
+
+message C_ENTER_GAME
+{
+	uint64 playerindex = 1;
+}
+
+message S_ENTER_GAME
+{
+	bool success = 1;
+}
+
+message C_CHAT
+{
+	string msg = 1;
+}
+
+message  S_CHAT
+{
+	uint64 playerId = 1;
+	string msg = 2;
 }
